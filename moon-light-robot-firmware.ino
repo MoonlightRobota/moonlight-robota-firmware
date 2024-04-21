@@ -18,18 +18,54 @@ void setup() {
   pinMode(A0, OUTPUT);
   buzzer(1);
   pinMode(12, INPUT_PULLUP);
-  while (digitalRead(12) != 0);
+  do {
+    car();
+
+  } while (digitalRead(12) != 0);
   Serial.println("Started...");
   buzzer(2);
-  motor(255,255);
-  delay(2000);
-  motor(0,0);
+//   motor(255, 255);
+//   delay(2000);
+//   motor(0, 0);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
 }
+void car() {
+  if (Serial.available() > 0) {
+    
+    char move = Serial.read();
+    Serial.print("serial received: ");
+    Serial.println(move);
+    
+    motor(0, 0);
+    analogWrite(10, 0);
+    int speed = 255;
+    switch (move) {
+
+      case 'F':
+        motor(speed, speed);
+        break;
+      case 'B':
+        motor(-speed, -speed);
+        break;
+      case 'R':
+        motor(speed, 0);
+        break;
+      case 'L':
+        motor(0, speed);
+        break;
+      case 'V':
+        buzzer(2);
+        break;
+      case 'X':
+        speed = 0;
+        break;
+    }
+  }
+}
+
 void buzzer(int count) {
   for (int i = 0; i < count; i++) {
     digitalWrite(A0, 1);
